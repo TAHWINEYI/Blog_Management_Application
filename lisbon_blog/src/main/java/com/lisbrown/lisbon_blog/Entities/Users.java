@@ -31,6 +31,7 @@ public class Users {
     @Size(min =10)
     private String password;
     @Transient
+    @Column(name="password_retry")
     private String passwordRetry;
     @Enumerated(EnumType.STRING)
     @Column(name="role")
