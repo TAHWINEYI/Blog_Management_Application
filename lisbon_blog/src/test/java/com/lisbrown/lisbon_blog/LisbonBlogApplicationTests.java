@@ -1,0 +1,13 @@
+package com.lisbrown.lisbon_blog;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class LisbonBlogApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
