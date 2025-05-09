@@ -23,11 +23,10 @@ public class Comments {
     @Column(name="created_date")
     private Instant createdOn;
     @CreatedBy
-    @Column(name="user_id")
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private Users user;
-    @Column(name="post_id")
+
     @ManyToOne
     @JoinColumn(name="post_id", nullable = false)
     private Posts post;
