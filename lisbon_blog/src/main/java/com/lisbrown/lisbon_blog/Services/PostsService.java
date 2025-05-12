@@ -5,8 +5,8 @@ import com.lisbrown.lisbon_blog.Entities.Posts;
 import java.util.List;
 
 public interface PostsService {
-    List<Posts> fetchAllPosts();
+    List<Posts> findAllPosts();
     void savePosts(Posts post);
     void deletePosts(Long post_id);
-    Posts fetchPostById(Long post_id);
+    Posts findPostById(Long post_id);
 }

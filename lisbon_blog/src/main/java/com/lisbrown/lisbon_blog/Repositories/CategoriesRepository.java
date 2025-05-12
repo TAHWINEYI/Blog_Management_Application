@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoriesRepository extends JpaRepository<Categories, Long> {
 
-    List<Categories> fetchAllCategories();
-    Categories fetchCategoryById(Long category_id);
-    void saveCategory(Categories category);
-    void deleteCategory(Long category_id);
+    List<Categories> findAll();
+    Optional<Categories> findById(Long category_id);
+    Categories save(Categories category);
+    void deleteById(Long category_id);
 }

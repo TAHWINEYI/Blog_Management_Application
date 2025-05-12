@@ -1,14 +1,19 @@
 package com.lisbrown.lisbon_blog.Repositories;
 
+import com.lisbrown.lisbon_blog.Entities.Users;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface UsersRepository <Users, Long>{
+public interface UsersRepository extends JpaRepository<Users, Long> {
 
-    List<Users> fetchAllUsers();
-    Users fetchUserById(Long user_id);
-    void saveUser(Users user);
-    void deleteUser(Long user_id);
+    List<Users> findAll();
+    Optional<Users> findById(Long user_id);
+    Users save(Users user);
+    void deleteById(Long user_id);
+
+
 }

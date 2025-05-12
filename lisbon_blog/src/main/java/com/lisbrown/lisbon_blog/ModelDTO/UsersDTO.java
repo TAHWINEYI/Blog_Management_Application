@@ -12,8 +12,6 @@ public record UsersDTO(Long user_id,
                        String lastName,
                        String email,
                        Instant date_created,
-                       String password,
-                       String password_retry,
                        Roles role,
                        List<Posts> post,
                        List<Comments> comments
