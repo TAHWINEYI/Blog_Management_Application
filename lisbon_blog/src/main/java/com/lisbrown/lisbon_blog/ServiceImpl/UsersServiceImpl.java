@@ -7,6 +7,7 @@ import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
 import com.lisbrown.lisbon_blog.Repositories.UsersRepository;
 import com.lisbrown.lisbon_blog.Services.UsersService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +19,12 @@ public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
     private final GlobalExceptionHandling globalExceptionHandling;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UsersRepository usersRepository, GlobalExceptionHandling globalExceptionHandling) {
+    public UsersServiceImpl(UsersRepository usersRepository, GlobalExceptionHandling globalExceptionHandling, BCryptPasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
         this.globalExceptionHandling = globalExceptionHandling;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class UsersServiceImpl implements UsersService {
             user.setEmail(updateDTO.email());
             user.setCreatedAt(updateDTO.date_created());
             user.setRole(updateDTO.role());
-            user.setPassword(updateDTO.password());
+            user.setPassword(passwordEncoder.encode(updateDTO.password()));
             user.setPasswordRetry(updateDTO.verify_password());
             usersRepository.save(user);
             return user;
@@ -80,7 +83,7 @@ public class UsersServiceImpl implements UsersService {
       user.setEmail(NewUserDTO.email());
       user.setCreatedAt(NewUserDTO.date_created());
       user.setRole(NewUserDTO.role());
-      user.setPassword(NewUserDTO.password());
+      user.setPassword(passwordEncoder.encode(NewUserDTO.password()));
       user.setPasswordRetry(NewUserDTO.verify_password());
       usersRepository.save(user);
     }
