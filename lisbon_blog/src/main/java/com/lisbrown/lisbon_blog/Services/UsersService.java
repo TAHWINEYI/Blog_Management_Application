@@ -12,5 +12,5 @@ public interface UsersService {
     Optional<UsersDTO> fetchUserById(Long user_id);
     Users updateUser(CreateUserDTO updateUser, Long user_id);
     String deleteUser(Long user_id);
-    void saveUser(CreateUserDTO NewUserDTO);
+    Users saveUser(CreateUserDTO NewUserDTO);
 }

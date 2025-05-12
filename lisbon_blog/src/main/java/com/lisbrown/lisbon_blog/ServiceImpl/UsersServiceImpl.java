@@ -1,5 +1,6 @@
 package com.lisbrown.lisbon_blog.ServiceImpl;
 
+import com.lisbrown.lisbon_blog.Configurations.AppConfig;
 import com.lisbrown.lisbon_blog.Entities.Users;
 import com.lisbrown.lisbon_blog.Exceptions.GlobalExceptionHandling;
 import com.lisbrown.lisbon_blog.Exceptions.ResourcesNotFoundException;
@@ -7,7 +8,7 @@ import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
 import com.lisbrown.lisbon_blog.Repositories.UsersRepository;
 import com.lisbrown.lisbon_blog.Services.UsersService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +20,9 @@ public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
     private final GlobalExceptionHandling globalExceptionHandling;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UsersRepository usersRepository, GlobalExceptionHandling globalExceptionHandling, BCryptPasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(UsersRepository usersRepository, GlobalExceptionHandling globalExceptionHandling, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
         this.globalExceptionHandling = globalExceptionHandling;
         this.passwordEncoder = passwordEncoder;
@@ -66,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
             user.setEmail(updateDTO.email());
             user.setCreatedAt(updateDTO.date_created());
             user.setRole(updateDTO.role());
-            user.setPassword(passwordEncoder.encode(updateDTO.password()));
+            user.setPassword(this.passwordEncoder.encode(updateDTO.password()));
             user.setPasswordRetry(updateDTO.verify_password());
             usersRepository.save(user);
             return user;
@@ -75,7 +76,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void saveUser(CreateUserDTO NewUserDTO) {
+    public Users saveUser(CreateUserDTO NewUserDTO) {
         Users user = new Users();
       user.setUserId(NewUserDTO.user_id());
       user.setFirstName(NewUserDTO.firstName());
@@ -83,9 +84,10 @@ public class UsersServiceImpl implements UsersService {
       user.setEmail(NewUserDTO.email());
       user.setCreatedAt(NewUserDTO.date_created());
       user.setRole(NewUserDTO.role());
-      user.setPassword(passwordEncoder.encode(NewUserDTO.password()));
+      user.setPassword(this.passwordEncoder.encode(NewUserDTO.password()));
       user.setPasswordRetry(NewUserDTO.verify_password());
       usersRepository.save(user);
+      return user;
     }
 
     @Override

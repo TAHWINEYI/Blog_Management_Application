@@ -1,4 +1,58 @@
 package com.lisbrown.lisbon_blog.Controllers;
 
+import com.lisbrown.lisbon_blog.Entities.Users;
+import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
+import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
+import com.lisbrown.lisbon_blog.ServiceImpl.UsersServiceImpl;
+
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/users")
+@EnableCaching
+@Slf4j
+@CrossOrigin
 public class UsersController {
+
+    private final UsersServiceImpl usersService;
+
+    public UsersController(UsersServiceImpl usersService) {
+        this.usersService = usersService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsersDTO>> fetchAllUsers(){
+        List<UsersDTO> users = usersService.fetchAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{user_id}")
+    public ResponseEntity<Optional<UsersDTO>> getUserById(@PathVariable("user_id") Long user_id){
+        return ResponseEntity.ok(usersService.fetchUserById(user_id));
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<Users> newUser(@Valid @RequestBody CreateUserDTO user){
+        Users createdUser = usersService.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+    @PutMapping("/updateUser/{user_id}")
+    public ResponseEntity<Users> updateUsers(@Valid @RequestBody CreateUserDTO user, @PathVariable("user_id") Long user_id){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(usersService.updateUser(user,user_id));
+
+    }
+    @DeleteMapping("/deleteUser/{user_id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
+        usersService.deleteUser(user_id);
+        return ResponseEntity.ok("the user with id:" + user_id + "has been successfully deleted");
+    }
 }
