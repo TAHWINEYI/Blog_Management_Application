@@ -1,5 +1,6 @@
 package com.lisbrown.lisbon_blog.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,11 @@ public class Comments {
     @CreatedBy
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
+    @JsonBackReference
     private Users user;
-
     @ManyToOne
     @JoinColumn(name="post_id", nullable = false)
+    @JsonBackReference
     private Posts post;
 
     public Long getCommentId() {

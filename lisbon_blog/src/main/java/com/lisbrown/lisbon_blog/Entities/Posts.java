@@ -1,5 +1,7 @@
 package com.lisbrown.lisbon_blog.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,12 +26,12 @@ public class Posts {
     private String  tittle;
     @Column(name="content", nullable = false)
     private String content;
-    @JoinColumn(name="category_id", nullable = false)
-    @OneToOne
-    private Categories category;
+    @OneToOne(mappedBy = "post")
+    private Categories categories;
     @CreatedBy
     @JoinColumn(name="user_id", nullable = false)
     @ManyToOne
+    @JsonBackReference
     private Users user;
     @CreatedDate
     @Column(name = "created_date")
@@ -37,6 +39,7 @@ public class Posts {
     private Blob image;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch =FetchType.LAZY)
     @Column(name="post_comments")
+    @JsonManagedReference
     private List<Comments> comments;
 
 
@@ -65,11 +68,11 @@ public class Posts {
     }
 
     public Categories getCategory() {
-        return category;
+        return categories;
     }
 
     public void setCategory(Categories category) {
-        this.category = category;
+        this.categories = category;
     }
 
     public Users getUser() {
@@ -126,7 +129,7 @@ public class Posts {
                 "postId=" + postId +
                 ", tittle='" + tittle + '\'' +
                 ", content='" + content + '\'' +
-                ", category=" + category +
+                ", category=" + categories +
                 ", user=" + user +
                 ", createdOn=" + createdOn +
                 ", image=" + image +

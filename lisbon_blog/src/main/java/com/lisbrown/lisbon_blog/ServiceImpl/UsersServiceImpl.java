@@ -1,8 +1,6 @@
 package com.lisbrown.lisbon_blog.ServiceImpl;
 
-import com.lisbrown.lisbon_blog.Configurations.AppConfig;
 import com.lisbrown.lisbon_blog.Entities.Users;
-import com.lisbrown.lisbon_blog.Exceptions.GlobalExceptionHandling;
 import com.lisbrown.lisbon_blog.Exceptions.ResourcesNotFoundException;
 import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
@@ -19,12 +17,10 @@ import java.util.stream.Collectors;
 public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
-    private final GlobalExceptionHandling globalExceptionHandling;
     private final PasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UsersRepository usersRepository, GlobalExceptionHandling globalExceptionHandling, PasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
-        this.globalExceptionHandling = globalExceptionHandling;
         this.passwordEncoder = passwordEncoder;
     }
 

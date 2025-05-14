@@ -13,7 +13,8 @@ public class Categories{
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private Long category_id;
     private String category;
-    @OneToOne(mappedBy = "category")
+    @JoinColumn(name="post_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private Posts post;
 
     public Long getCategory_id() {

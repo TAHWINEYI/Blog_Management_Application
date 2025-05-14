@@ -1,5 +1,6 @@
 package com.lisbrown.lisbon_blog.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -37,8 +39,10 @@ public class Users {
     @Column(name="role")
     private Roles role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Posts> posts;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Comments> comments;
 
     public String getFirstName() {
@@ -53,16 +57,20 @@ public class Users {
         return posts;
     }
 
-    public void setPosts(List<Posts> posts) {
-        this.posts = posts;
+    public Users addPosts(Posts post) {
+        posts.add(post);
+        post.setUser(this);
+        return this;
     }
 
     public List<Comments> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comments> comments) {
-        this.comments = comments;
+    public Users addComments(Comments comment) {
+        comments.add(comment);
+        comment.setUser(this);
+        return this;
     }
 
     public Roles getRole() {

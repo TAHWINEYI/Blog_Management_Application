@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api")
 @EnableCaching
 @Slf4j
 @CrossOrigin
@@ -28,29 +28,29 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<UsersDTO>> fetchAllUsers(){
         List<UsersDTO> users = usersService.fetchAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/users/{user_id}")
     public ResponseEntity<Optional<UsersDTO>> getUserById(@PathVariable("user_id") Long user_id){
         return ResponseEntity.ok(usersService.fetchUserById(user_id));
     }
 
-    @PostMapping("/addUser")
+    @PostMapping("/users/addUser")
     public ResponseEntity<Users> newUser(@Valid @RequestBody CreateUserDTO user){
         Users createdUser = usersService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
-    @PutMapping("/updateUser/{user_id}")
+    @PutMapping("/users/updateUser/{user_id}")
     public ResponseEntity<Users> updateUsers(@Valid @RequestBody CreateUserDTO user, @PathVariable("user_id") Long user_id){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(usersService.updateUser(user,user_id));
 
     }
-    @DeleteMapping("/deleteUser/{user_id}")
+    @DeleteMapping("/users/deleteUser/{user_id}")
     public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
         usersService.deleteUser(user_id);
         return ResponseEntity.ok("the user with id:" + user_id + "has been successfully deleted");
