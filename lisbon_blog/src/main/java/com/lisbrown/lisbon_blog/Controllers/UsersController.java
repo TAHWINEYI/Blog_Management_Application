@@ -10,12 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/api")
 @EnableCaching
 @Slf4j
@@ -39,7 +40,7 @@ public class UsersController {
         return ResponseEntity.ok(usersService.fetchUserById(user_id));
     }
 
-    @PostMapping("/users/addUser")
+    @PostMapping("/users/register")
     public ResponseEntity<Users> newUser(@Valid @RequestBody CreateUserDTO user){
         Users createdUser = usersService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -54,5 +55,11 @@ public class UsersController {
     public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
         usersService.deleteUser(user_id);
         return ResponseEntity.ok("the user with id:" + user_id + "has been successfully deleted");
+    }
+
+    @PostMapping("/login")
+    public String verify(@Valid @RequestBody Users user)
+    {
+        return usersService.verify(user);
     }
 }

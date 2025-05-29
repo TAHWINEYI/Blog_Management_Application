@@ -11,11 +11,12 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
+public class Users{
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
@@ -37,7 +38,7 @@ public class Users {
     private String passwordRetry;
     @Enumerated(EnumType.STRING)
     @Column(name="role")
-    private Roles role;
+    private Set<Roles> roles;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference
     private List<Posts> posts;
@@ -47,6 +48,13 @@ public class Users {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 
     public void setFirstName(String firstName) {
@@ -73,13 +81,6 @@ public class Users {
         return this;
     }
 
-    public Roles getRole() {
-        return role;
-    }
-
-    public void setRole(Roles role) {
-        this.role = role;
-    }
 
     public String getLastName() {
         return lastName;
@@ -132,14 +133,14 @@ public class Users {
     @Override
     public String toString() {
         return "Users{" +
-                "firstName='" + firstName + '\'' +
-                ", userId=" + userId +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", createdAt=" + createdAt +
                 ", password='" + password + '\'' +
                 ", passwordRetry='" + passwordRetry + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", role=" + role +
+                ", roles=" + roles +
                 ", posts=" + posts +
                 ", comments=" + comments +
                 '}';

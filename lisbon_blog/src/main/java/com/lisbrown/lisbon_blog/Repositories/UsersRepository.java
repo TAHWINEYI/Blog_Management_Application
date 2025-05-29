@@ -18,6 +18,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     Optional<Users> findById(Long user_id);
     Users save(Users user);
     void deleteById(Long user_id);
+
+    Users findByEmail(String email);
 //    @Query(SELECT * FROM u,p )
 //    List<Users> findByKeyword(String Keyword);
 

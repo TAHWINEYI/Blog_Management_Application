@@ -6,13 +6,14 @@ import com.lisbrown.lisbon_blog.Entities.Roles;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 public record UsersDTO(Long user_id,
                        String firstName,
                        String lastName,
                        String email,
                        Instant date_created,
-                       Roles role,
+                       Set<Roles> role,
                        List<Posts> post,
                        List<Comments> comments
                        ) {

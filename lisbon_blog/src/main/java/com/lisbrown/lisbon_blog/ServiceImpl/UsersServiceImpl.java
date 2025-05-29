@@ -6,20 +6,27 @@ import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
 import com.lisbrown.lisbon_blog.Repositories.UsersRepository;
 import com.lisbrown.lisbon_blog.Services.UsersService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UsersServiceImpl implements UsersService {
 
+    private final AuthenticationManager authenticationManager;
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(AuthenticationManager authenticationManager, UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -32,7 +39,7 @@ public class UsersServiceImpl implements UsersService {
                         user.getLastName(),
                         user.getEmail(),
                         user.getCreatedAt(),
-                        user.getRole(),
+                        user.getRoles(),
                         user.getPosts(),
                         user.getComments()))
                         .collect(Collectors.toList());
@@ -46,7 +53,7 @@ public class UsersServiceImpl implements UsersService {
                         user.getLastName(),
                         user.getEmail(),
                         user.getCreatedAt(),
-                        user.getRole(),
+                        user.getRoles(),
                         user.getPosts(),
                         user.getComments()))
                 .orElseThrow(() -> new ResourcesNotFoundException("the user with id:" + user_id + "was not found")));
@@ -62,7 +69,7 @@ public class UsersServiceImpl implements UsersService {
             user.setLastName(updateDTO.lastName());
             user.setEmail(updateDTO.email());
             user.setCreatedAt(updateDTO.date_created());
-            user.setRole(updateDTO.role());
+            user.setRoles(Collections.singleton(updateDTO.role()));
             user.setPassword(this.passwordEncoder.encode(updateDTO.password()));
             user.setPasswordRetry(updateDTO.verify_password());
             usersRepository.save(user);
@@ -79,7 +86,7 @@ public class UsersServiceImpl implements UsersService {
       user.setLastName(NewUserDTO.lastName());
       user.setEmail(NewUserDTO.email());
       user.setCreatedAt(NewUserDTO.date_created());
-      user.setRole(NewUserDTO.role());
+      user.setRoles(Collections.singleton(NewUserDTO.role()));
       user.setPassword(this.passwordEncoder.encode(NewUserDTO.password()));
       user.setPasswordRetry(NewUserDTO.verify_password());
       usersRepository.save(user);
@@ -94,5 +101,16 @@ public class UsersServiceImpl implements UsersService {
             return "user with user_id:" + user_id + "has been deleted successfully";
         };
         return "user with user_id:" + user_id + "was not found";
+    }
+
+    public String verify(Users user) {
+        Authentication authenticate = authenticationManager
+                .authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+        );
+        var u = usersRepository.findByEmail(user.getEmail());
+        if(!Objects.isNull(u))
+            return "login successful";
+        return "login failed";
     }
 }
