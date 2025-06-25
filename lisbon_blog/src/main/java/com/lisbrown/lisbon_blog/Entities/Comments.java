@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -13,6 +14,7 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

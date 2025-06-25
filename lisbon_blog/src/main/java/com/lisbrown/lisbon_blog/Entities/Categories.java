@@ -3,10 +3,12 @@ package com.lisbrown.lisbon_blog.Entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class Categories{
 
     @Id

@@ -32,7 +32,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 ).formLogin(form-> form
                         .loginPage("/login")
-                        .permitAll());
+                        .loginProcessingUrl("/perform_login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?logout=true")
+                        .permitAll()
+                ).logout(logout-> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout = true")
+                ).exceptionHandling(exception->exception
+                        .accessDeniedPage("/access-denied"));
         return http.build();
     }
 

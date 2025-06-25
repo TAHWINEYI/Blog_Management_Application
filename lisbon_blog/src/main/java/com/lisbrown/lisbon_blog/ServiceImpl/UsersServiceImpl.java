@@ -6,11 +6,15 @@ import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
 import com.lisbrown.lisbon_blog.Repositories.UsersRepository;
 import com.lisbrown.lisbon_blog.Services.UsersService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -32,30 +36,26 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<UsersDTO> fetchAllUsers() {
-        List<Users> users = usersRepository.findAll();
-              return users.stream().map(user-> new UsersDTO(user.getUserId(),
+    public Page<UsersDTO> fetchAllUsers(Pageable pageable) {
+        Page<Users> users = usersRepository.findAll(pageable);
+        List<UsersDTO> fetchedUserDTO = users.stream().map(user-> new UsersDTO(
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
-                        user.getCreatedAt(),
-                        user.getRoles(),
-                        user.getPosts(),
-                        user.getComments()))
+                        user.getCreatedAt()))
                         .collect(Collectors.toList());
+        return new PageImpl<>(fetchedUserDTO,pageable,fetchedUserDTO.size());
     }
 
     @Override
     public Optional<UsersDTO> fetchUserById(Long user_id) throws ResourcesNotFoundException{
         return Optional.ofNullable(usersRepository.findById(user_id)
-                .map(user -> new UsersDTO(user.getUserId(),
+                .map(user -> new UsersDTO(
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
-                        user.getCreatedAt(),
-                        user.getRoles(),
-                        user.getPosts(),
-                        user.getComments()))
+                        user.getCreatedAt()
+                ))
                 .orElseThrow(() -> new ResourcesNotFoundException("the user with id:" + user_id + "was not found")));
     }
 
@@ -112,5 +112,17 @@ public class UsersServiceImpl implements UsersService {
         if(!Objects.isNull(u))
             return "login successful";
         return "login failed";
+    }
+
+    @Override
+    public Page<UsersDTO> fetchByKeyword(Pageable pageable, String keyword) {
+        String searchWord = keyword.toLowerCase();
+        Page<Users> searchedResults = usersRepository.findByKeyword(searchWord,pageable);
+        List<UsersDTO> fetchedUsersDTO = searchedResults.stream().map(sr-> new UsersDTO(
+                sr.getFirstName(),
+                sr.getLastName(),
+                sr.getLastName(),sr.getCreatedAt()))
+                .collect(Collectors.toList());
+        return  new PageImpl<>(fetchedUsersDTO,pageable,fetchedUsersDTO.size());
     }
 }
