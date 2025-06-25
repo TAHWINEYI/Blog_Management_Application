@@ -12,7 +12,7 @@ To run this application, ensure you have the following installed on your system:
 * Maven 3.8+
 * PostgreSQL database
 
----
+--
 
 ## Features
 
