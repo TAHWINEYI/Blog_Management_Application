@@ -29,7 +29,5 @@ public interface UsersRepository extends PagingAndSortingRepository<Users, Long>
             "OR u.first_name " +
             "OR u.last_name " +
             "LIKE '%:keyword%'", nativeQuery = true)
-    Page<Users> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
-
-
+    Page<Users> findByKeywordIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 }

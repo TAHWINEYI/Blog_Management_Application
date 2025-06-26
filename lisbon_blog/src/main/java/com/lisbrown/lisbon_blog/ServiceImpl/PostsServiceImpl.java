@@ -33,11 +33,20 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
+    public PostsDTO findById(Long postId) {
+        return postsRepository.findById(postId).map(
+                u -> new PostsDTO(
+                        u.getTittle(), u.getContent(), u.getCategory(),
+                        u.getUser(), u.getCreatedOn(), u.getImage(), u.getComments())
+        ).orElseThrow(() -> new ResourcesNotFoundException("post with post id:" + postId + "was not found"));
+    }
+
+    @Override
     public Page<PostsDTO> findAllPosts(Pageable pageable) {
 
         Page<Posts> posts = postsRepository.findAll(pageable);
         List<PostsDTO> fetchedPostsDTO = posts.stream()
-                .map(post-> new PostsDTO(post.getPostId(),
+                .map(post-> new PostsDTO(
                         post.getTittle(),
                         post.getContent(),
                         post.getCategory(),
@@ -51,7 +60,6 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public Posts addNewPosts(PostsDTO post) {
         Posts newPost = new Posts();
-        newPost.setPostId(post.post_id());
         newPost.setUser(post.user_id());
         newPost.setCategory(post.category_id());
         newPost.setContent(post.content());
@@ -76,7 +84,7 @@ public class PostsServiceImpl implements PostsService {
     public Optional<PostsDTO> findPostById(Long post_id) throws ResourcesNotFoundException {
         return Optional.ofNullable(postsRepository.findById(post_id).map(
                 u -> new PostsDTO(
-                        u.getPostId(), u.getTittle(), u.getContent(), u.getCategory(),
+                        u.getTittle(), u.getContent(), u.getCategory(),
                         u.getUser(), u.getCreatedOn(), u.getImage(), u.getComments())
         ).orElseThrow(() -> new ResourcesNotFoundException("post with post id:" + post_id + "was not found")));
     }

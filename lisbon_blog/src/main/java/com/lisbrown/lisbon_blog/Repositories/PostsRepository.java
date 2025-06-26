@@ -5,6 +5,7 @@ import com.lisbrown.lisbon_blog.ModelDTO.PostsDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,12 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
     Posts save(Posts post);
     void deleteById(Long post_id);
     Optional<Posts> findById(Long post_id);
-    List<Posts> findByKeywordIgnoreCase(Pageable pageable,String keyword);
+    PostsDTO findByPostId(Long postId);
+
+    @Query(value="SELECT p.tittle, p.content, p,category_id, p.user_id, p.created_date, p.image, p.comments " +
+            "FROM Posts p " +
+            "WHERE p.tittle " +
+            "OR p.content " +
+            "LIKE '%:keyword%'", nativeQuery=true)
+    Page<Posts> findByKeywordIgnoreCase(Pageable pageable,String keyword);
 }

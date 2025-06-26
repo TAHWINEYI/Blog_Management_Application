@@ -37,28 +37,30 @@ public class PostsController {
     @Cacheable("posts")
     public ResponseEntity<Page<PostsDTO>> fetchAllPost(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size)
-    {   log.info("fetching all posts");
-        Pageable pageable = PageRequest.of(page,size);
+            @RequestParam(defaultValue = "10") int size) {
+        log.info("fetching all posts");
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(postsService.findAllPosts(pageable));
     }
 
     @GetMapping("/{post_id}")
     @Cacheable("post")
-    public ResponseEntity<Optional<PostsDTO>> fetchPostById(@PathVariable("post_id") Long post_id){
+    public ResponseEntity<Optional<PostsDTO>> fetchPostById(@PathVariable("post_id") Long post_id) {
         log.info("fetching blog post with id: {}", post_id);
         return ResponseEntity.ofNullable(postsService.findPostById(post_id));
     }
+
     @PostMapping("/post")
     @PreAuthorize("hasRole('ADMIN','BLOGGER')")
-    public ResponseEntity<Posts> newPost(@Valid @RequestBody PostsDTO postsDTO){
+    public ResponseEntity<Posts> newPost(@Valid @RequestBody PostsDTO postsDTO) {
         Posts post = postsService.addNewPosts(postsDTO);
         log.info("creating a new post with title: {}", postsDTO.tittle());
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
+
     @DeleteMapping("/deletePost/{post_id}")
     @PreAuthorize("hasRole('ADMIN','BLOGGER')")
-    public ResponseEntity<String> deletePost(@PathVariable("post_id") Long post_id){
+    public ResponseEntity<String> deletePost(@PathVariable("post_id") Long post_id) {
         postsService.deletePosts(post_id);
         log.info("deleted blog post id: {}", post_id);
         return ResponseEntity.ok("post with id:" + post_id + "has been deleted");
@@ -66,10 +68,17 @@ public class PostsController {
 
     @GetMapping("/search/{keyword}")
     @Cacheable("posts")
-    public ResponseEntity<Page<PostsDTO>> search (@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size,
-                                                  String keyword){
-        Pageable pageable = PageRequest.of(page,size);
-        return ResponseEntity.ok(postsService.fetchPostByKeyword(pageable,keyword));
+    public ResponseEntity<Page<PostsDTO>> search(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size,
+                                                 String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(postsService.fetchPostByKeyword(pageable, keyword));
+    }
+
+    @PutMapping("/update/{post_id}")
+    public ResponseEntity<Posts> updatePost(Long post_id) {
+        PostsDTO updatePost = postsService.findById(post_id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(postsService.addNewPosts(updatePost));
     }
 }

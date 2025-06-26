@@ -116,8 +116,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Page<UsersDTO> fetchByKeyword(Pageable pageable, String keyword) {
-        String searchWord = keyword.toLowerCase();
-        Page<Users> searchedResults = usersRepository.findByKeyword(searchWord,pageable);
+        Page<Users> searchedResults = usersRepository.findByKeywordIgnoreCase(keyword.toLowerCase(),pageable);
         List<UsersDTO> fetchedUsersDTO = searchedResults.stream().map(sr-> new UsersDTO(
                 sr.getFirstName(),
                 sr.getLastName(),
