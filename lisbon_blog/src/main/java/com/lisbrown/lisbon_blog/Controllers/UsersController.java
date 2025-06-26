@@ -28,7 +28,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 @EnableCaching
 @Slf4j
-@CrossOrigin(origins = "http://localhost:143")
+@CrossOrigin(origins = "https://frontend.com")
 @EnableMethodSecurity
 public class UsersController {
 
@@ -40,29 +40,34 @@ public class UsersController {
 
     @GetMapping("/users")
     @Cacheable("users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UsersDTO>> fetchAllUsers(@RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "10")int size)
     {
         Pageable pageable = PageRequest.of(page,size);
+        log.info("fetching pages of users");
         Page<UsersDTO> users = usersService.fetchAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/users/{user_id}")
+    @GetMapping("/{user_id}")
     @Cacheable("user")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Optional<UsersDTO>> getUserById(@PathVariable("user_id") Long user_id){
+        log.info("fetching user with user id {}:", user_id);
         return ResponseEntity.ok(usersService.fetchUserById(user_id));
     }
 
-    @PostMapping("/users/register")
+    @PostMapping("/register")
     public ResponseEntity<Users> newUser(@Valid @RequestBody CreateUserDTO user){
         Users createdUser = usersService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
-    @PutMapping("/users/updateUser/{user_id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/updateUser/{user_id}")
     @CachePut(value = "updateUser")
-    public ResponseEntity<Users> updateUsers(@Valid @RequestBody CreateUserDTO user, @PathVariable("user_id") Long user_id){
+    public ResponseEntity<Users> updateUsers(@Valid @RequestBody CreateUserDTO user,
+                                             @PathVariable("user_id") Long user_id){
+        log.info("updating user with user id: {}", user_id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(usersService.updateUser(user,user_id));
 
@@ -71,7 +76,7 @@ public class UsersController {
     @PreAuthorize("hasRole('ADMIN')")
     @CacheEvict(value = "user")
     public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
-        //logger.info("deleting user with user_id" + user_id );
+        log.info("deleting user with user_id: {}", user_id );
         usersService.deleteUser(user_id);
         return ResponseEntity.ok("the user with id:" + user_id + "has been successfully deleted");
     }
@@ -89,6 +94,7 @@ public class UsersController {
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestParam("keyword") String keyword){
         Pageable pageable = PageRequest.of(page,size);
+        log.info("searching users using keyword: {}", keyword);
        return usersService.fetchByKeyword(pageable, keyword);
     }
 }

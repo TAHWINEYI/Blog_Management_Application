@@ -5,6 +5,9 @@ import com.lisbrown.lisbon_blog.Exceptions.ResourcesNotFoundException;
 import com.lisbrown.lisbon_blog.ModelDTO.PostsDTO;
 import com.lisbrown.lisbon_blog.Repositories.PostsRepository;
 import com.lisbrown.lisbon_blog.Services.PostsService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +23,20 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public List<PostsDTO> findAllPosts() {
+    public Page<PostsDTO> fetchPostByKeyword(Pageable pageable, String keyword) {
+        List<PostsDTO> fetchedPost = postsRepository.findByKeywordIgnoreCase(pageable,keyword)
+                .stream().map(postsDTO -> new PostsDTO(
+                postsDTO.getTittle(),postsDTO.getContent(), postsDTO.getCategory(),
+                postsDTO.getUser(),postsDTO.getCreatedOn(), postsDTO.getImage(),postsDTO.getComments()
+        )).toList();
+        return new PageImpl<>(fetchedPost,pageable, fetchedPost.size());
+    }
 
-        List<Posts> posts = postsRepository.findAll();
-        return posts.stream()
+    @Override
+    public Page<PostsDTO> findAllPosts(Pageable pageable) {
+
+        Page<Posts> posts = postsRepository.findAll(pageable);
+        List<PostsDTO> fetchedPostsDTO = posts.stream()
                 .map(post-> new PostsDTO(post.getPostId(),
                         post.getTittle(),
                         post.getContent(),
@@ -31,8 +44,8 @@ public class PostsServiceImpl implements PostsService {
                         post.getUser(),
                         post.getCreatedOn(),
                         post.getImage(),
-                        post.getComments()))
-                .collect(Collectors.toList());
+                        post.getComments())).collect(Collectors.toList());
+        return new PageImpl<>(fetchedPostsDTO,pageable,fetchedPostsDTO.size());
     }
 
     @Override

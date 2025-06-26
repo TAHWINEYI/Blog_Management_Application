@@ -8,7 +8,7 @@ import java.sql.Blob;
 import java.time.Instant;
 import java.util.List;
 
-public record PostsDTO(Long post_id,
+public record PostsDTO(
                        String tittle,
                        String content,
                        Categories category_id,
