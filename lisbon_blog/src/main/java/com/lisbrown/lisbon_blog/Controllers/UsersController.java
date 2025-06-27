@@ -3,6 +3,7 @@ package com.lisbrown.lisbon_blog.Controllers;
 import com.lisbrown.lisbon_blog.Entities.Users;
 import com.lisbrown.lisbon_blog.ModelDTO.CreateUserDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.UsersDTO;
+import com.lisbrown.lisbon_blog.Security.Permissions;
 import com.lisbrown.lisbon_blog.ServiceImpl.UsersServiceImpl;
 
 import jakarta.validation.Valid;
@@ -34,12 +35,13 @@ public class UsersController {
 
     private final UsersServiceImpl usersService;
 
+
     public UsersController(UsersServiceImpl usersService) {
         this.usersService = usersService;
     }
 
     @GetMapping("/users")
-    @Cacheable("users")
+    @Cacheable(value ="users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UsersDTO>> fetchAllUsers(@RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "10")int size)
@@ -51,7 +53,7 @@ public class UsersController {
     }
 
     @GetMapping("/{user_id}")
-    @Cacheable("user")
+    @Cacheable(value="user")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Optional<UsersDTO>> getUserById(@PathVariable("user_id") Long user_id){
         log.info("fetching user with user id {}:", user_id);
@@ -63,8 +65,8 @@ public class UsersController {
         Users createdUser = usersService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
-    @PutMapping("/updateUser/{user_id}")
-    @CachePut(value = "updateUser")
+    @PutMapping("/update/{user_id}")
+    @CachePut(value = "user")
     public ResponseEntity<Users> updateUsers(@Valid @RequestBody CreateUserDTO user,
                                              @PathVariable("user_id") Long user_id){
         log.info("updating user with user id: {}", user_id);
@@ -72,7 +74,7 @@ public class UsersController {
                 .body(usersService.updateUser(user,user_id));
 
     }
-    @DeleteMapping("/users/deleteUser/{user_id}")
+    @DeleteMapping("/delete/{user_id}")
     @PreAuthorize("hasRole('ADMIN')")
     @CacheEvict(value = "user")
     public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
@@ -84,12 +86,13 @@ public class UsersController {
     @PostMapping("/login")
     public String verify(@Valid @RequestBody Users user)
     {
-        //logger.info("sending user details for verification");
+        log.info("sending user details for verification");
         return usersService.verify(user);
     }
 
     @GetMapping("/search")
-    @Cacheable("users")
+    @Cacheable(value = "users")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<UsersDTO> search(@RequestParam(defaultValue = "0")int page,
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestParam("keyword") String keyword){

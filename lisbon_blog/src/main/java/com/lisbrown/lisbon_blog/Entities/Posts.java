@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
+@Audited
 public class Posts {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
