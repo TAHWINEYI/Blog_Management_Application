@@ -19,7 +19,7 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
     Posts save(Posts post);
     void deleteById(Long post_id);
     Optional<Posts> findById(Long post_id);
-    PostsDTO findByPostId(Long postId);
+    Posts findByPostId(Long postId);
 
     @Query(value="SELECT p.tittle, p.content, p,category_id, p.user_id, p.created_date, p.image, p.comments " +
             "FROM Posts p " +

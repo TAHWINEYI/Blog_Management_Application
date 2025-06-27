@@ -18,7 +18,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain=true)
-@Audited
 public class Users{
 
     @Id

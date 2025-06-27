@@ -1,6 +1,7 @@
 package com.lisbrown.lisbon_blog.Repositories;
 
 import com.lisbrown.lisbon_blog.Entities.Comments;
+import com.lisbrown.lisbon_blog.ModelDTO.CommentsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface CommentRepository extends JpaRepository<Comments, Long> {
     Comments save(Comments comment);
     Optional<Comments> findById(Long comment_id);
     void deleteById(Long comment_id);
+    List<CommentsDTO> searchByKeyword(String keyword);
 }

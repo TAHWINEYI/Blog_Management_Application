@@ -10,6 +10,6 @@ import java.util.Optional;
 public class AuditAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.empty(SecurityContextHolder.getContext().getAuthentication().getName());
+        return Optional.of(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }

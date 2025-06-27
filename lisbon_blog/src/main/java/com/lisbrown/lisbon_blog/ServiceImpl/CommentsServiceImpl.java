@@ -21,11 +21,18 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
+    public List<CommentsDTO> searchByKeyword(String keyword) {
+        return commentRepository.searchByKeyword(keyword)
+                .stream()
+                .toList();
+    }
+
+    @Override
     public List<CommentsDTO> findAllComments() {
             return commentRepository.findAll()
                     .stream()
                     .map(comment -> new CommentsDTO(
-                            comment.getCommentId(), comment.getContent(),
+                             comment.getContent(),
                             comment.getCreatedOn(), comment.getUser(), comment.getPost()
                     )).toList();
     }
@@ -33,7 +40,6 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public Comments saveComment(CommentsDTO commentDTO) {
     Comments comments = new Comments();
-    comments.setCommentId(commentDTO.comment_id());
     comments.setUser(commentDTO.user_id());
     comments.setContent(commentDTO.content());
     comments.setCreatedOn(commentDTO.created_date());
@@ -46,8 +52,9 @@ public class CommentsServiceImpl implements CommentsService {
     public Optional<CommentsDTO> fetchCommentById(Long comment_id) {
         Optional<Comments> comments = commentRepository.findById(comment_id);
         return Optional.ofNullable(comments.map(comment -> new CommentsDTO(
-                        comment.getCommentId(), comment.getContent(),
-                        comment.getCreatedOn(), comment.getUser(), comment.getPost()))
+                         comment.getContent(),
+                        comment.getCreatedOn(),
+                        comment.getUser(), comment.getPost()))
                 .orElseThrow(() -> new ResourcesNotFoundException("comment with id:" + comment_id + "was not found")));
     }
 

@@ -47,14 +47,16 @@ public class PostsController {
             @RequestParam(defaultValue = "10") int size) {
         log.info("fetching all posts");
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(postsService.findAllPosts(pageable));
+        return ResponseEntity
+                .ok(postsService.findAllPosts(pageable));
     }
 
     @GetMapping("/{post_id}")
     @Cacheable("post")
     public ResponseEntity<Optional<PostsDTO>> fetchPostById(@PathVariable("post_id") Long post_id) {
         log.info("fetching blog post with id: {}", post_id);
-        return ResponseEntity.ofNullable(postsService.findPostById(post_id));
+        return ResponseEntity
+                .ofNullable(postsService.findPostById(post_id));
     }
 
     @PostMapping("/add")
@@ -63,7 +65,8 @@ public class PostsController {
     public ResponseEntity<Posts> newPost(@Valid @RequestBody PostsDTO postsDTO) {
         Posts post = postsService.addNewPosts(postsDTO);
         log.info("creating a new post with title: {}", postsDTO.tittle());
-        return ResponseEntity.status(HttpStatus.CREATED).body(post);
+        return ResponseEntity
+                .status(HttpStatus.CREATED).body(post);
     }
 
     @DeleteMapping("/delete/{post_id}")
@@ -73,7 +76,8 @@ public class PostsController {
     public ResponseEntity<String> deletePost(@PathVariable("post_id") Long post_id) {
         postsService.deletePosts(post_id);
         log.info("deleted blog post id: {}", post_id);
-        return ResponseEntity.ok("post with id:" + post_id + "has been deleted");
+        return ResponseEntity
+                .ok("post with id:" + post_id + "has been deleted");
     }
 
     @GetMapping("/search/{keyword}")
@@ -83,7 +87,8 @@ public class PostsController {
                                                  String keyword) {
         Pageable pageable = PageRequest.of(page, size);
         log.info("searching for blogs with either title or content that contains keyword: {}", keyword);
-        return ResponseEntity.ok(postsService.fetchPostByKeyword(pageable, keyword));
+        return ResponseEntity
+                .ok(postsService.fetchPostByKeyword(pageable, keyword));
     }
 
     @PutMapping("/update/{post_id}")
@@ -93,7 +98,8 @@ public class PostsController {
     public ResponseEntity<Posts> updatePost(Long post_id) {
         PostsDTO updatePost = postsService.findById(post_id);
         log.info("updating blog post with id: {}",post_id);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(postsService.addNewPosts(updatePost));
     }
 }

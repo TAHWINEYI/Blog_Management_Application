@@ -57,13 +57,16 @@ public class UsersController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Optional<UsersDTO>> getUserById(@PathVariable("user_id") Long user_id){
         log.info("fetching user with user id {}:", user_id);
-        return ResponseEntity.ok(usersService.fetchUserById(user_id));
+        return ResponseEntity
+                .ok(usersService.fetchUserById(user_id));
     }
 
     @PostMapping("/register")
     public ResponseEntity<Users> newUser(@Valid @RequestBody CreateUserDTO user){
         Users createdUser = usersService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdUser);
     }
     @PutMapping("/update/{user_id}")
     @CachePut(value = "user")
@@ -80,7 +83,8 @@ public class UsersController {
     public ResponseEntity<String> deleteUser(@PathVariable("user_id") Long user_id){
         log.info("deleting user with user_id: {}", user_id );
         usersService.deleteUser(user_id);
-        return ResponseEntity.ok("the user with id:" + user_id + "has been successfully deleted");
+        return ResponseEntity
+                .ok("the user with id:" + user_id + "has been successfully deleted");
     }
 
     @PostMapping("/login")
