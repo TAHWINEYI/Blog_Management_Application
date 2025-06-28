@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,12 +22,17 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
     Optional<Posts> findById(Long post_id);
     Posts findByPostId(Long postId);
 
-    @Query(value="SELECT p.tittle, p.content, p,category_id, p.user_id, p.created_date, p.image, p.comments " +
+    @Query(value="SELECT p.tittle, p.content, p.category_id, p.user_id, p.created_date, p.image, p.comments " +
             "FROM Posts p " +
             "WHERE p.tittle " +
             "OR p.content " +
-            "LIKE '%:keyword%'", nativeQuery=true)
-    Page<Posts> findByKeywordIgnoreCase(Pageable pageable,String keyword);
+            "LIKE '%:keyword%'",
+            nativeQuery=true)
+    Page<Posts> findByKeywordIgnoreCase(Pageable pageable,@Param("keyword") String keyword);
 
-    Page<PostsDTO> findByCategory(String category);
+    @Query(value = "SELECT p.title, p.content, p.category, p.user_id, p.created_date, p.image, p.comments " +
+            "FROM Posts p " +
+            "WHERE p.category_id.category = :category",
+            nativeQuery = true)
+    Page<PostsDTO> findByCategory(@Param("category")String category, Pageable pageable);
 }

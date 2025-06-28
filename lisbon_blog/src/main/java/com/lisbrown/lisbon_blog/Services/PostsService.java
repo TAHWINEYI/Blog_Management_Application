@@ -14,7 +14,7 @@ public interface PostsService {
     Posts addNewPosts(PostsDTO post);
     String deletePosts(Long post_id);
     Optional<PostsDTO> findPostById(Long post_id);
-    Page<PostsDTO> fetchPostByKeyword(Pageable pageable, String keyowrd);
+    Page<PostsDTO> fetchPostByKeyword(Pageable pageable, String keyword);
     PostsDTO findById(Long postId);
     Page<PostsDTO> fetchByCategory(String category, Pageable pageable);
 }

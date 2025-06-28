@@ -4,6 +4,7 @@ import com.lisbrown.lisbon_blog.Entities.Posts;
 import com.lisbrown.lisbon_blog.ModelDTO.CategoriesDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.PostsDTO;
 import com.lisbrown.lisbon_blog.Security.Permissions;
+import com.lisbrown.lisbon_blog.ServiceImpl.CategoriesServiceImpl;
 import com.lisbrown.lisbon_blog.ServiceImpl.PostsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +36,12 @@ public class PostsController {
 
     private final PostsServiceImpl postsService;
     private final Permissions permissions;
-    private final CategoriesDTO categoriesDTO;
+    private final CategoriesServiceImpl categoriesService;
 
-    public PostsController(PostsServiceImpl postsService, Permissions permissions, CategoriesDTO categoriesDTO) {
+    public PostsController(PostsServiceImpl postsService, Permissions permissions, CategoriesServiceImpl categoriesService) {
         this.postsService = postsService;
         this.permissions = permissions;
-        this.categoriesDTO = categoriesDTO;
+        this.categoriesService = categoriesService;
     }
 
     @GetMapping("/posts")
@@ -83,7 +84,7 @@ public class PostsController {
                 .ok("post with id:" + post_id + "has been deleted");
     }
 
-    @GetMapping("/search/{keyword}")
+    @GetMapping("/category/{keyword}")
     @Cacheable(value="posts")
     public ResponseEntity<Page<PostsDTO>> search(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size,
@@ -112,9 +113,7 @@ public class PostsController {
                                                           @RequestParam(defaultValue="0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        if (category.equals(this.categoriesDTO.category()))
-            log.info("fetching blog post under category: {}", category);
-            return ResponseEntity.ofNullable(postsService.fetchByCategory(category, pageable));
-        return null;
+        log.info("fetching blog post under category: {}", category);
+        return ResponseEntity.ofNullable(postsService.fetchByCategory(category, pageable));
     }
 }

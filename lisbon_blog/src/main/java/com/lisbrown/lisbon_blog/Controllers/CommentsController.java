@@ -101,7 +101,7 @@ public class CommentsController {
         return ResponseEntity.ok("user with id: " + commentId + "has been deleted successfully");
     }
 
-    @GetMapping("/search")
+    @GetMapping("/{keyword}")
     @Cacheable(value = "comments")
     public ResponseEntity<PageImpl<CommentsDTO>> search (String keyword,
                                                          @RequestParam(defaultValue = "0") int page,

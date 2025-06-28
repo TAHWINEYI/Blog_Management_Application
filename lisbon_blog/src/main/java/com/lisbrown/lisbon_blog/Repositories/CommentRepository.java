@@ -4,6 +4,7 @@ import com.lisbrown.lisbon_blog.Entities.Comments;
 import com.lisbrown.lisbon_blog.ModelDTO.CommentsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comments, Long> {
+public interface CommentRepository extends PagingAndSortingRepository<Comments, Long> {
     List<Comments> findAll();
     Comments save(Comments comment);
     Optional<Comments> findById(Long comment_id);
