@@ -16,4 +16,5 @@ public interface PostsService {
     Optional<PostsDTO> findPostById(Long post_id);
     Page<PostsDTO> fetchPostByKeyword(Pageable pageable, String keyowrd);
     PostsDTO findById(Long postId);
+    Page<PostsDTO> fetchByCategory(String category, Pageable pageable);
 }

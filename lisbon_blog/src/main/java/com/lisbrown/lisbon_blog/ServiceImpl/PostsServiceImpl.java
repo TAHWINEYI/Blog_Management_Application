@@ -42,6 +42,15 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
+    public Page <PostsDTO> fetchByCategory(String category, Pageable pageable) {
+        List<PostsDTO> posts = postsRepository.findByCategory(category)
+                .stream().map(post-> new PostsDTO(post.tittle(),post.content(),post.category_id(),
+                post.user_id(),post.created_date(),post.image(),post.comments()))
+                .toList();
+        return  new PageImpl<>(posts,pageable,posts.size());
+    }
+
+    @Override
     public Page<PostsDTO> findAllPosts(Pageable pageable) {
 
         Page<Posts> posts = postsRepository.findAll(pageable);

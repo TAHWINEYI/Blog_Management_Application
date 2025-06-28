@@ -1,6 +1,7 @@
 package com.lisbrown.lisbon_blog.Controllers;
 
 import com.lisbrown.lisbon_blog.Entities.Posts;
+import com.lisbrown.lisbon_blog.ModelDTO.CategoriesDTO;
 import com.lisbrown.lisbon_blog.ModelDTO.PostsDTO;
 import com.lisbrown.lisbon_blog.Security.Permissions;
 import com.lisbrown.lisbon_blog.ServiceImpl.PostsServiceImpl;
@@ -34,10 +35,12 @@ public class PostsController {
 
     private final PostsServiceImpl postsService;
     private final Permissions permissions;
+    private final CategoriesDTO categoriesDTO;
 
-    public PostsController(PostsServiceImpl postsService, Permissions permissions) {
+    public PostsController(PostsServiceImpl postsService, Permissions permissions, CategoriesDTO categoriesDTO) {
         this.postsService = postsService;
         this.permissions = permissions;
+        this.categoriesDTO = categoriesDTO;
     }
 
     @GetMapping("/posts")
@@ -101,5 +104,17 @@ public class PostsController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(postsService.addNewPosts(updatePost));
+    }
+
+    @GetMapping("/post/{category}")
+    @Cacheable(value="post")
+    public ResponseEntity<Page<PostsDTO>> fetchByCategory(@RequestParam("category") String category,
+                                                          @RequestParam(defaultValue="0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (category.equals(this.categoriesDTO.category()))
+            log.info("fetching blog post under category: {}", category);
+            return ResponseEntity.ofNullable(postsService.fetchByCategory(category, pageable));
+        return null;
     }
 }

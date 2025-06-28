@@ -21,8 +21,8 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public List<CommentsDTO> searchByKeyword(String keyword) {
-        return commentRepository.searchByKeyword(keyword)
+    public List<CommentsDTO> findByKeyword(String keyword) {
+        return commentRepository.findByKeyword(keyword)
                 .stream()
                 .toList();
     }

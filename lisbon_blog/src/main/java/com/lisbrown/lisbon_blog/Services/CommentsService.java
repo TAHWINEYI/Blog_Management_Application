@@ -12,5 +12,5 @@ public interface CommentsService {
     Comments saveComment(CommentsDTO commentDTO);
     Optional<CommentsDTO> fetchCommentById(Long comment_id);
     String deleteComment(Long comment_id);
-    List<CommentsDTO> searchByKeyword(String keyword);
+    List<CommentsDTO> findByKeyword(String keyword);
 }

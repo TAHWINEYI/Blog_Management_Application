@@ -107,7 +107,7 @@ public class CommentsController {
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size){
        Pageable pageable = PageRequest.of(page, size);
-       List<CommentsDTO> results = commentsService.searchByKeyword(keyword);
+       List<CommentsDTO> results = commentsService.findByKeyword(keyword);
        return ResponseEntity.ok(new PageImpl<>(results,pageable,results.size()));
     }
 }

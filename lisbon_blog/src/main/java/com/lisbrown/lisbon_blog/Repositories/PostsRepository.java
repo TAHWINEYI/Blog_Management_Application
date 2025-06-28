@@ -27,4 +27,6 @@ public interface PostsRepository extends PagingAndSortingRepository<Posts, Long>
             "OR p.content " +
             "LIKE '%:keyword%'", nativeQuery=true)
     Page<Posts> findByKeywordIgnoreCase(Pageable pageable,String keyword);
+
+    Page<PostsDTO> findByCategory(String category);
 }
